@@ -4,6 +4,8 @@
 #include <QThread>
 #include <QImage>
 
+#include "perceptron.h"
+
 class MainWindow;
 
 class WorkerThread : public QThread
@@ -16,6 +18,8 @@ public:
     //
     void startLoadFile(const QString &rcFilePath);
     //
+    void startModelTraining(int nSensors);
+    //
     void startImageRecognition(const QImage &rcImageInput);
     //
     void stop();
@@ -27,10 +31,14 @@ private:
     enum Operation
     {
         LoadFile,
+        TrainModel,
         RecognizeImage
     };
     //
     MainWindow *m_pWindow;
+    //
+    Perceptron *m_Perceptron;
+    //
     Operation m_nOperation;
     QString m_FilePath;
     QScopedPointer<QImage> m_ptrInput, m_ptrResult;

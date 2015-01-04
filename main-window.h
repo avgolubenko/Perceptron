@@ -27,6 +27,7 @@ protected:
     //
 private slots:
     void onActionOpenTriggered();
+    void onActionTrainTriggered();
     void onActionRecognizeTriggered();
     void onActionCancelTriggered();
     // реакция на запуск потока

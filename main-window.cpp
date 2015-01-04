@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(m_pAreaImage);
     //
     connect(ui->action_Open, &QAction::triggered, this, &MainWindow::onActionOpenTriggered);
+    connect(ui->action_Train, &QAction::triggered, this, &MainWindow::onActionTrainTriggered);
     connect(ui->action_Recognize, &QAction::triggered, this, &MainWindow::onActionRecognizeTriggered);
     connect(ui->cancelButton, &QAbstractButton::pressed, this, &MainWindow::onActionCancelTriggered);
     //
@@ -62,6 +63,11 @@ void MainWindow::onActionOpenTriggered()
                                                     tr("Images (*.png *.bmp *.jpg)"));
     if(!fileName.isEmpty())
         m_pThreadWork->startLoadFile(fileName);
+}
+
+void MainWindow::onActionTrainTriggered()
+{
+    m_pThreadWork->startModelTraining(m_Image.width() + m_Image.height());
 }
 
 void MainWindow::onActionRecognizeTriggered()
