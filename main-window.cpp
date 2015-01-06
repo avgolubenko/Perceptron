@@ -67,12 +67,12 @@ void MainWindow::onActionOpenTriggered()
 
 void MainWindow::onActionTrainTriggered()
 {
-    m_pThreadWork->startModelTraining(m_Image.width() + m_Image.height());
+    m_pThreadWork->startTrainModel(m_Image.width() + m_Image.height());
 }
 
 void MainWindow::onActionRecognizeTriggered()
 {
-    m_pThreadWork->startImageRecognition(m_Image);
+    m_pThreadWork->startClassifyImage(m_Image);
 }
 
 void MainWindow::onActionCancelTriggered()
@@ -98,16 +98,48 @@ void MainWindow::onThreadFinished()
     ui->cancelButton->hide();
     //
     QApplication::restoreOverrideCursor();
-    //
-    const QImage *pcImage = m_pThreadWork->getResultImage();
-    if(pcImage)
-    {
-        m_Image = *pcImage;
-        m_pLabelImage->setPixmap(QPixmap::fromImage(m_Image));
-//        m_pLabelImage->adjustSize();
+    //    
+    switch (m_pThreadWork->m_nOperation) {
+        case LoadFile:
+        {
+            const QImage *pcImage = m_pThreadWork->getResultImage();
+            if(pcImage)
+            {
+                m_Image = *pcImage;
+                m_pLabelImage->setPixmap(QPixmap::fromImage(m_Image));
+//                m_pLabelImage->adjustSize();
+                //
+                ui->action_Train->setEnabled(true);
+                statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("File is loaded"), 2000);
+            }
+            break;
+        }
+        case RecognizeImage:
+        {
+            QString ptrName;
+            switch (m_pThreadWork->getImgType()) {
+            case 1:
+                ptrName = tr("Up");
+                break;
+            case 0:
+                ptrName = tr("Down");
+                break;
+            default:
+                ptrName = tr("Unknown");
+                break;
+            }
+            //
+            statusBar()->showMessage(m_bCanceled ? tr("Canceled") : ptrName);
+            break;
+        }
+        case TrainModel:
+        {
+            ui->action_Train->setEnabled(false);
+            ui->action_Recognize->setEnabled(true);
+            statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("Model is trained"), 2000);
+            break;
+        }
     }
-    //
-    statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("Finished"), 2000);
 }
 
 void MainWindow::onThreadCanceled()
