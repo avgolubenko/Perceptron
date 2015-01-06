@@ -1,6 +1,8 @@
 #include "worker-thread.h"
 #include "main-window.h"
 
+#include <QDir>
+
 WorkerThread::WorkerThread(MainWindow *pWindow) : m_pWindow(pWindow){}
 
 WorkerThread::~WorkerThread()
@@ -14,6 +16,11 @@ const QImage *WorkerThread::getResultImage() const
     return m_ptrResult.data();
 }
 
+int WorkerThread::getImgType() const
+{
+    return m_imgType;
+}
+
 void WorkerThread::startLoadFile(const QString &rcFilePath)
 {
     if (isRunning())
@@ -25,7 +32,7 @@ void WorkerThread::startLoadFile(const QString &rcFilePath)
     QThread::start();
 }
 
-void WorkerThread::startModelTraining(int nSensors)
+void WorkerThread::startTrainModel(int nSensors)
 {
     if (isRunning())
         return;
@@ -35,7 +42,7 @@ void WorkerThread::startModelTraining(int nSensors)
     QThread::start();
 }
 
-void WorkerThread::startImageRecognition(const QImage &rcImageInput)
+void WorkerThread::startClassifyImage(const QImage &rcImageInput)
 {
     if (isRunning())
         return;
@@ -61,17 +68,26 @@ void WorkerThread::run()
         //
         case TrainModel:
     {
-            // сформировать обучающую выборку из папки images
+            // формирование обучающей выборки
             QList<Pattern> trainSet;
+            // папка с обучающими изображениями
+            QDir imgDir(":/images/images");
+            QFileInfoList files = imgDir.entryInfoList(QStringList("*.jpg"));
+            foreach (QFileInfo file, files) {
+                QString fName = file.fileName();
+                int type = fName[fName.indexOf(QChar('-')) - 1].digitValue();
+                if(type != -1)
+                {
+                    QImage img(imgDir.absoluteFilePath(fName));
+                    trainSet << Pattern(img,type);
+                }
+            }
             m_Perceptron->train(trainSet);
             break;
     }
         case RecognizeImage:
-            if(m_ptrInput)
-            {
-                m_Perceptron->recognize(*m_ptrInput.data());
-                m_ptrResult.reset(new QImage(*m_ptrInput));
-            }
+            if(m_ptrInput)            
+                m_imgType = m_Perceptron->classify(*m_ptrInput.data());
             break;
     }
 }
