@@ -106,6 +106,9 @@
    </property>
   </action>
   <action name="action_Recognize">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Recognize</string>
    </property>
@@ -117,6 +120,9 @@
    </property>
   </action>
   <action name="action_Train">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>&amp;Train</string>
    </property>
