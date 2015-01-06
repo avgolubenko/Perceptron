@@ -8,40 +8,47 @@
 
 class MainWindow;
 
+enum Operation
+{
+    LoadFile,
+    TrainModel,
+    RecognizeImage
+};
+
 class WorkerThread : public QThread
 {
     Q_OBJECT
 public:
     WorkerThread(MainWindow *pWindow);
     ~WorkerThread();
+    // тип вычислительной операции
+    Operation m_nOperation;
+    // геттер для m_ptrResult
     const QImage *getResultImage() const;
+    // геттер для m_imgType
+    int getImgType() const;
     //
     void startLoadFile(const QString &rcFilePath);
     //
-    void startModelTraining(int nSensors);
+    void startTrainModel(int nSensors);
     //
-    void startImageRecognition(const QImage &rcImageInput);
+    void startClassifyImage(const QImage &rcImageInput);
     //
     void stop();
 signals:
 //    void started();
 //    void finished();
     void canceled();
-private:
-    enum Operation
-    {
-        LoadFile,
-        TrainModel,
-        RecognizeImage
-    };
+private:    
     //
     MainWindow *m_pWindow;
     //
     Perceptron *m_Perceptron;
     //
-    Operation m_nOperation;
     QString m_FilePath;
     QScopedPointer<QImage> m_ptrInput, m_ptrResult;
+    // класс изображения
+    int m_imgType;
     //
     virtual void run();
 };
