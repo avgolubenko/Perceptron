@@ -111,7 +111,7 @@ void Perceptron::recognize(const QImage &image)
         this->sensors[i].setValue(0);
         for(int j = 0; j < cm; j++)
             if(QColor(image.pixel(j, i)) == QColor(Qt::black))
-                this->sensors[i].addValue();
+                this->sensors[i].incValue();
     }
     for(int i = cn; i < cn + cm; i++)
     {
@@ -119,7 +119,7 @@ void Perceptron::recognize(const QImage &image)
         this->sensors[i].setValue(0);
         for (int j = 0; j < cn; j++)
             if(QColor(image.pixel(i - cn, j)) == QColor(Qt::black))
-                this->sensors[i].addValue();
+                this->sensors[i].incValue();
     }
 }
 

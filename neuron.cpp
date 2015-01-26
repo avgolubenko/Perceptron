@@ -14,7 +14,7 @@ void Neuron::setValue(int val)
     this->value = val;
 }
 
-void Neuron::addValue()
+void Neuron::incValue()
 {
     this->addValue(1);
 }

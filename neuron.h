@@ -12,7 +12,7 @@ public:
     //
     virtual void setValue(int val);
     // увеличение value на 1
-    virtual void addValue();
+    virtual void incValue();
     // увеличение value на n
     virtual void addValue(int n);
     // геттер для value
