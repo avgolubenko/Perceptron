@@ -32,13 +32,11 @@ void Perceptron::train(const QList<Pattern> trSet)
             //
             actual = this->argMaxR();
             //  правила Хебба
-            if(pat.type == 0 && actual == 1){
-                this->overestimateAR(pat.type,1); //pat.type - actual
-                this->overestimateAR(1,-1);
-            }
-            else if(pat.type == 1 && actual == 0){
+            if(pat.type != actual){
                 this->overestimateAR(pat.type,1);
-                this->overestimateAR(0,-1);
+                for(int i = 0; i < this->resultings.size(); ++i)
+                    if(i != pat.type)
+                        this->overestimateAR(i,-1);
             }
         }while(pat.type != actual);
     }
