@@ -1,6 +1,6 @@
 #include "neuron.h"
 
-Neuron::Neuron() : threshold(0){}
+Neuron::Neuron(int t) : threshold(t){}
 
 Neuron::~Neuron(){}
 
@@ -56,3 +56,6 @@ void Associative::setLinkWeight(int idx, int weight)
 {
     this->links[idx] = weight;
 }
+
+
+Resulting::Resulting(int t) : Neuron(t){}

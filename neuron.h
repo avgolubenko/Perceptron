@@ -20,7 +20,7 @@ public:
     // геттер для links
     virtual QList<int> getLinks() const;
 protected:
-    Neuron();
+    Neuron(int t = 0);
     // значение нейрона
     int value;
     // порог для передаточной ф-и
@@ -42,6 +42,10 @@ public:
     void setLinkWeight(int idx, int weight);
 };
 
-class Resulting : public Neuron{};
+class Resulting : public Neuron
+{
+public:
+    Resulting(int t);
+};
 
 #endif // NEURON_H
