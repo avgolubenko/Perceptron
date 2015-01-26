@@ -12,7 +12,7 @@ Perceptron::Perceptron(int in, int out)
     for (int j = 0; j < assoc; ++j)
         this->associatives << new Associative(out);
     for (int j = 0; j < out; ++j)
-        this->resultings << Resulting();
+        this->resultings << Resulting(j);
 }
 
 Perceptron::~Perceptron(){}
@@ -20,14 +20,27 @@ Perceptron::~Perceptron(){}
 void Perceptron::train(const QList<Pattern> trSet)
 {
     foreach (Pattern pat, trSet) {
+        // предъявление образа
         this->recognize(pat.img);
-        //
+        // вычисление реакций нейронов A слоя
         this->calcReactionA();
         //
-        if(pat.type)
-            this->overestimateAR(0,-1);
-        else
-            this->overestimateAR(0,1);
+        int actual;
+        do {
+            // вычисление реакций нейронов R слоя
+            this->calcReactionR();
+            //
+            actual = this->argMaxR();
+            //  правила Хебба
+            if(pat.type == 0 && actual == 1){
+                this->overestimateAR(pat.type,1); //pat.type - actual
+                this->overestimateAR(1,-1);
+            }
+            else if(pat.type == 1 && actual == 0){
+                this->overestimateAR(pat.type,1);
+                this->overestimateAR(0,-1);
+            }
+        }while(pat.type != actual);
     }
 }
 
@@ -54,11 +67,8 @@ void Perceptron::calcReactionA()
             this->associatives[j]->addValue(this->sensors[i].getValue() * this->sensors[i].getLinks()[j]);
 }
 
-int Perceptron::classify(const QImage &image)
+void Perceptron::calcReactionR()
 {
-    this->recognize(image);
-    //
-    this->calcReactionA();
     // обнуление значений нейронов R слоя
     for(int i = 0; i < this->resultings.size(); i++)
         this->resultings[i].setValue(0);
@@ -67,8 +77,27 @@ int Perceptron::classify(const QImage &image)
         for(int j = 0; j < this->associatives[i]->getLinks().size(); j++)
             this->resultings[j].addValue(
                     this->associatives[i]->thresholdFunc() * this->associatives[i]->getLinks()[j]);
+}
+
+int Perceptron::argMaxR() const
+{
+    int max_idx = 0; // индекс нейрона-"победителя"
+    // поиск max отклика
+    for(int i = 1; i < this->resultings.size(); ++i)
+        if(resultings[i].thresholdFunc() > resultings[max_idx].thresholdFunc())
+            max_idx = i;
+    return max_idx;
+}
+
+int Perceptron::classify(const QImage &image)
+{
+    this->recognize(image);
     //
-    return this->resultings[0].thresholdFunc();
+    this->calcReactionA();    
+    //
+    this->calcReactionR();
+    //
+    return this->argMaxR();//this->resultings[0].thresholdFunc();
 }
 
 void Perceptron::recognize(const QImage &image)

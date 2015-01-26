@@ -37,6 +37,10 @@ private:
     void overestimateAR(int rIdx, int value);
     // вычисление реакции нейронов A слоя
     void calcReactionA();
+    // вычисление реакции нейронов R слоя
+    void calcReactionR();
+    // определение "победившего" нейрона R слоя
+    int argMaxR() const;
 };
 
 #endif // PERCEPTRON_H
