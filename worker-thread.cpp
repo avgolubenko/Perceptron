@@ -38,7 +38,7 @@ void WorkerThread::startTrainModel(int nSensors)
         return;
     //
     m_nOperation = TrainModel;
-    m_Perceptron = new Perceptron(nSensors,1);
+    m_Perceptron = new Perceptron(nSensors,2);
     QThread::start();
 }
 
@@ -82,7 +82,9 @@ void WorkerThread::run()
                     trainSet << Pattern(img,type);
                 }
             }
-            m_Perceptron->train(trainSet);
+            int nIters = 2; // число циклов обучения
+            for(int iter = 0; iter < nIters; ++iter)
+                m_Perceptron->train(trainSet);
             break;
     }
         case RecognizeImage:
