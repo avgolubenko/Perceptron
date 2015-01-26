@@ -65,7 +65,7 @@ void MainWindow::onActionOpenTriggered()
 
 void MainWindow::onActionTrainTriggered()
 {
-    m_pThreadWork->startTrainModel(m_Image.width() + m_Image.height());
+    m_pThreadWork->startTrainModel(m_Image.width() + m_Image.height(), 3);
 }
 
 void MainWindow::onActionRecognizeTriggered()

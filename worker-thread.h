@@ -30,7 +30,7 @@ public:
     //
     void startLoadFile(const QString &rcFilePath);
     //
-    void startTrainModel(int nSensors);
+    void startTrainModel(int nSensors, int nPatterns);
     //
     void startClassifyImage(const QImage &rcImageInput);
     //

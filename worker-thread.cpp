@@ -32,13 +32,13 @@ void WorkerThread::startLoadFile(const QString &rcFilePath)
     QThread::start();
 }
 
-void WorkerThread::startTrainModel(int nSensors)
+void WorkerThread::startTrainModel(int nSensors, int nPatterns)
 {
     if (isRunning())
         return;
     //
     m_nOperation = TrainModel;
-    m_Perceptron = new Perceptron(nSensors,2);
+    m_Perceptron = new Perceptron(nSensors,nPatterns);
     QThread::start();
 }
 
