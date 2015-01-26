@@ -44,6 +44,7 @@ private:
     QImage m_Image;
     WorkerThread *m_pThreadWork;
     bool m_bCanceled;
+    bool m_bTrained;
 };
 
 #endif // MAINWINDOW_H

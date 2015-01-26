@@ -6,14 +6,12 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow), m_bTrained(false)
 {
     ui->setupUi(this);
     //
     m_pLabelImage = new QLabel;
     m_pLabelImage->setAlignment(Qt::AlignCenter);
-//    m_pLabelImage->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-//    m_pLabelImage->setScaledContents(true);
     //
     m_pAreaImage = new QScrollArea(this);
     m_pAreaImage->setBackgroundRole(QPalette::Dark);
@@ -88,7 +86,6 @@ void MainWindow::onThreadStarted()
     ui->cancelButton->show();
     QApplication::setOverrideCursor(Qt::WaitCursor);
     m_bCanceled = false;
-//    m_pThreadWork->sleep(2);
 }
 
 void MainWindow::onThreadFinished()
@@ -107,9 +104,8 @@ void MainWindow::onThreadFinished()
             {
                 m_Image = *pcImage;
                 m_pLabelImage->setPixmap(QPixmap::fromImage(m_Image));
-//                m_pLabelImage->adjustSize();
                 //
-                ui->action_Train->setEnabled(true);
+                ui->action_Train->setEnabled(!m_bTrained);
                 statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("File is loaded"), 2000);
             }
             break;
@@ -118,10 +114,10 @@ void MainWindow::onThreadFinished()
         {
             QString ptrName;
             switch (m_pThreadWork->getImgType()) {
-            case 1:
+            case 0:
                 ptrName = tr("Up");
                 break;
-            case 0:
+            case 1:
                 ptrName = tr("Down");
                 break;
             default:
@@ -134,6 +130,7 @@ void MainWindow::onThreadFinished()
         }
         case TrainModel:
         {
+            m_bTrained = true;
             ui->action_Train->setEnabled(false);
             ui->action_Recognize->setEnabled(true);
             statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("Model is trained"), 2000);
