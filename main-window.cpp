@@ -120,6 +120,9 @@ void MainWindow::onThreadFinished()
             case 1:
                 ptrName = tr("Down");
                 break;
+            case 2:
+                ptrName = tr("Circle");
+                break;
             default:
                 ptrName = tr("Unknown");
                 break;
