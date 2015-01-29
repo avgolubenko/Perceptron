@@ -57,8 +57,8 @@ void MainWindow::closeEvent(QCloseEvent *pEvent)
 void MainWindow::onActionOpenTriggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Open Image File"),
-                                                    QString("../../SimplePerceptron/images"),
-                                                    tr("Images (*.png *.bmp *.jpg)"));
+                                                    QString(":/images"),
+                                                    tr("Images (*.jpg)"));
     if(!fileName.isEmpty())
         m_pThreadWork->startLoadFile(fileName);
 }
