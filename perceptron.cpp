@@ -2,14 +2,14 @@
 
 #include <QColor>
 
-Perceptron::Perceptron(int in, int out)
+Perceptron::Perceptron(int in, int nAssocLayers, int nAssoc, int out)
 {
     // кол-во нейронов в A слое
-    int assoc = in * 2;
+//    int nANeurons = in * 2;
     //
     for (int j = 0; j < in; ++j)
-        this->sensors << Sensor(assoc);
-    for (int j = 0; j < assoc; ++j)
+        this->sensors << Sensor(nAssoc);
+    for (int j = 0; j < nAssoc; ++j)
         this->associatives << new Associative(out);
     for (int j = 0; j < out; ++j)
         this->resultings << Resulting(0);

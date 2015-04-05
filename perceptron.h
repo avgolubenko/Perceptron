@@ -15,9 +15,14 @@ struct Pattern
 
 class Perceptron
 {
-public:
-    // in - кол-во сенсоров, out - кол-во выходов
-    Perceptron(int in, int out);
+public:   
+    /*
+     * in - кол-во сенсоров,
+     * nAssocLayers - кол-во скрытых слоёв,
+     * nAssoc - кол-во нейронов в скрытых слоях
+     * out - кол-во выходов.
+     */
+    Perceptron(int in, int nAssocLayers, int nAssoc, int out);
     ~Perceptron();
     // обучение сети набором trSet
     void train(const QList<Pattern> trSet);    
