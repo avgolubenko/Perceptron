@@ -16,14 +16,17 @@ SOURCES += main.cpp\
         main-window.cpp \
     worker-thread.cpp \
     neuron.cpp \
-    perceptron.cpp
+    perceptron.cpp \
+    create-dialog.cpp
 
 HEADERS  += main-window.h \
     worker-thread.h \
     neuron.h \
-    perceptron.h
+    perceptron.h \
+    create-dialog.h
 
-FORMS    += main-window.ui
+FORMS    += main-window.ui \
+    create-dialog.ui
 
 RESOURCES += \
     simpleperceptron.qrc

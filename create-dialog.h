@@ -2,21 +2,16 @@
 #define CREATEDIALOG_H
 
 #include <QDialog>
+#include "ui_create-dialog.h"
 
-namespace Ui {
-class CreateDialog;
-}
-
-class CreateDialog : public QDialog
+class CreateModelDialog : public QDialog, public Ui::CreateModelDialog
 {
     Q_OBJECT
 
 public:
-    explicit CreateDialog(QWidget *parent = 0);
-    ~CreateDialog();
-
-private:
-    Ui::CreateDialog *ui;
+    explicit CreateModelDialog(QWidget *parent = 0);
+private slots:
+    void on_layersNumSpinBox_valueChanged(int i);
 };
 
 #endif // CREATEDIALOG_H
