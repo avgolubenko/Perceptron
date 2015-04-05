@@ -27,6 +27,7 @@ protected:
     //
 private slots:
     void onActionOpenTriggered();
+    void onActionCreateTriggered();
     void onActionTrainTriggered();
     void onActionRecognizeTriggered();
     void onActionCancelTriggered();

@@ -30,11 +30,13 @@ public:
     //
     void startLoadFile(const QString &rcFilePath);
     //
-    void startTrainModel(int nSensors, int nPatterns);
+    void startTrainModel();
     //
     void startClassifyImage(const QImage &rcImageInput);
     //
     void stop();
+    // создание сети
+    void createModel(int nSensors, int nHiddenLayers, int nHiddenNeurons, int nPatterns);
 signals:
 //    void started();
 //    void finished();

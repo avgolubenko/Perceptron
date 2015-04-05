@@ -32,13 +32,13 @@ void WorkerThread::startLoadFile(const QString &rcFilePath)
     QThread::start();
 }
 
-void WorkerThread::startTrainModel(int nSensors, int nPatterns)
+void WorkerThread::startTrainModel()
 {
     if (isRunning())
         return;
     //
     m_nOperation = TrainModel;
-    m_Perceptron = new Perceptron(nSensors,nPatterns);
+//    m_Perceptron = new Perceptron(nSensors,nPatterns);
     QThread::start();
 }
 
@@ -55,6 +55,11 @@ void WorkerThread::startClassifyImage(const QImage &rcImageInput)
 void WorkerThread::stop()
 {
     requestInterruption();
+}
+
+void WorkerThread::createModel(int nSensors, int nHiddenLayers, int nHiddenNeurons, int nPatterns)
+{
+    m_Perceptron = new Perceptron(nSensors, nHiddenLayers, nHiddenNeurons, nPatterns);
 }
 
 void WorkerThread::run()

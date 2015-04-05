@@ -1,6 +1,7 @@
 #include "main-window.h"
 #include "worker-thread.h"
 #include "ui_main-window.h"
+#include "create-dialog.h"
 
 #include <QtWidgets>
 
@@ -20,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(m_pAreaImage);
     //
     connect(ui->action_Open, &QAction::triggered, this, &MainWindow::onActionOpenTriggered);
+    connect(ui->action_Create, &QAction::triggered, this, &MainWindow::onActionCreateTriggered);
     connect(ui->action_Train, &QAction::triggered, this, &MainWindow::onActionTrainTriggered);
     connect(ui->action_Recognize, &QAction::triggered, this, &MainWindow::onActionRecognizeTriggered);
     connect(ui->cancelButton, &QAbstractButton::pressed, this, &MainWindow::onActionCancelTriggered);
@@ -63,9 +65,26 @@ void MainWindow::onActionOpenTriggered()
         m_pThreadWork->startLoadFile(fileName);
 }
 
+void MainWindow::onActionCreateTriggered()
+{
+    CreateModelDialog *cDialog = new CreateModelDialog(this);
+    if(cDialog->exec())
+    {
+        int w = 50, h = 50;
+        int nHiddens = cDialog->layersNumSpinBox->value();
+        int nHiddenNeurons = cDialog->layerSpinBox1->value();
+        m_pThreadWork->createModel(w + h, nHiddens, nHiddenNeurons, 3);
+        //
+        m_bTrained = false;
+        ui->action_Train->setEnabled(true);
+        ui->action_Recognize->setEnabled(false);
+    }
+    delete cDialog;
+}
+
 void MainWindow::onActionTrainTriggered()
 {
-    m_pThreadWork->startTrainModel(m_Image.width() + m_Image.height(), 3);
+    m_pThreadWork->startTrainModel();
 }
 
 void MainWindow::onActionRecognizeTriggered()
@@ -105,7 +124,7 @@ void MainWindow::onThreadFinished()
                 m_Image = *pcImage;
                 m_pLabelImage->setPixmap(QPixmap::fromImage(m_Image));
                 //
-                ui->action_Train->setEnabled(!m_bTrained);
+                ui->action_Recognize->setEnabled(m_bTrained);
                 statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("File is loaded"), 2000);
             }
             break;
@@ -115,10 +134,10 @@ void MainWindow::onThreadFinished()
             QString ptrName;
             switch (m_pThreadWork->getImgType()) {
             case 0:
-                ptrName = tr("Up");
+                ptrName = tr("Up Triangle");
                 break;
             case 1:
-                ptrName = tr("Down");
+                ptrName = tr("Down Triangle");
                 break;
             case 2:
                 ptrName = tr("Circle");
@@ -135,7 +154,6 @@ void MainWindow::onThreadFinished()
         {
             m_bTrained = true;
             ui->action_Train->setEnabled(false);
-            ui->action_Recognize->setEnabled(true);
             statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("Model is trained"), 2000);
             break;
         }

@@ -62,6 +62,7 @@
     <property name="title">
      <string>&amp;Model</string>
     </property>
+    <addaction name="action_Create"/>
     <addaction name="action_Train"/>
    </widget>
    <widget class="QMenu" name="menu_Image">
@@ -116,7 +117,7 @@
     <string>Recognize the image</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+R</string>
+    <string>Alt+R</string>
    </property>
   </action>
   <action name="action_Train">
@@ -127,10 +128,21 @@
     <string>&amp;Train</string>
    </property>
    <property name="toolTip">
-    <string>Train a neuronal network</string>
+    <string>Train neuronal network</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+T</string>
+    <string>Alt+T</string>
+   </property>
+  </action>
+  <action name="action_Create">
+   <property name="text">
+    <string>&amp;Create</string>
+   </property>
+   <property name="toolTip">
+    <string>Create neuronal network</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+C</string>
    </property>
   </action>
  </widget>
