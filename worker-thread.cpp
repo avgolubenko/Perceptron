@@ -3,11 +3,8 @@
 
 #include <QDir>
 
-WorkerThread::WorkerThread(MainWindow *pWindow) : m_pWindow(pWindow){}
-
 WorkerThread::~WorkerThread()
 {
-//    delete m_pWindow;
     delete m_Perceptron;
 }
 

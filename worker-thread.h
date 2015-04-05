@@ -19,7 +19,6 @@ class WorkerThread : public QThread
 {
     Q_OBJECT
 public:
-    WorkerThread(MainWindow *pWindow);
     ~WorkerThread();
     // тип вычислительной операции
     Operation m_nOperation;
@@ -41,9 +40,7 @@ signals:
 //    void started();
 //    void finished();
     void canceled();
-private:    
-    //
-    MainWindow *m_pWindow;
+private:        
     //
     Perceptron *m_Perceptron;
     //
