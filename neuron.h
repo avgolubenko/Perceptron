@@ -38,7 +38,7 @@ public:
 class Associative : public Neuron
 {
 public:
-    Associative(int edges);
+    Associative(int edges, int weight);
     void setLinkWeight(int idx, int weight);
 };
 
@@ -46,6 +46,23 @@ class Resulting : public Neuron
 {
 public:
     Resulting(int t);
+};
+
+enum LayerType{
+    SensorType,
+    AssociativeType,
+    ResultingType
+};
+
+class Layer
+{
+public:
+    Layer(LayerType type, int cnt, int out);
+    // установить значение val для всех нейронов слоя
+    void setValue(int val);
+    QList<Neuron*> neurons;
+private:
+    LayerType type;
 };
 
 #endif // NEURON_H

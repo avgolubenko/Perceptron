@@ -34,7 +34,6 @@ QList<int> Neuron::getLinks() const
     return this->links;
 }
 
-
 Sensor::Sensor(int edges) : Neuron()
 {
     for(int i = 0; i < edges; ++i)
@@ -42,14 +41,13 @@ Sensor::Sensor(int edges) : Neuron()
         this->links << qrand() % 3 - 1;
 }
 
-
-Associative::Associative(int edges) : Neuron()
+Associative::Associative(int edges, int weight) : Neuron(qrand() % 3 - 1)
 {
     // задание случайного порога
-    this->threshold = qrand() % 3 - 1;
+//    this->threshold = qrand() % 3 - 1;
     for (int i = 0; i < edges; ++i)
-    // инициализация весов A-R 0-значениями
-        this->links << 0;
+    // инициализация весов значениями weight
+        this->links << weight;
 }
 
 void Associative::setLinkWeight(int idx, int weight)
@@ -57,5 +55,32 @@ void Associative::setLinkWeight(int idx, int weight)
     this->links[idx] = weight;
 }
 
-
 Resulting::Resulting(int t) : Neuron(t){}
+
+Layer::Layer(LayerType type, int cnt, int out)
+{
+    this->type = type;
+    switch (type) {
+    case SensorType:
+        for(int i = 0; i < cnt; ++i)
+            this->neurons << new Sensor(out);
+        break;
+    case AssociativeType:
+        for(int i = 0; i < cnt; ++i)
+            this->neurons << new Associative(out,/*qrand() % 3 - */1);
+        break;
+    case ResultingType:
+        for(int i = 0; i < cnt; ++i)
+            this->neurons << new Resulting(0);
+        break;
+    default:
+        break;
+    }
+}
+
+void Layer::setValue(int val)
+{
+    foreach (Neuron* n, this->neurons) {
+        n->setValue(val);
+    }
+}
