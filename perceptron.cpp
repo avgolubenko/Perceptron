@@ -2,23 +2,23 @@
 
 #include <QColor>
 
-Perceptron::Perceptron(int in, int nAssocLayers, int nAssoc, int out)
+Perceptron::Perceptron(int in, int nHidden, int nH_Neurons, int out)
 {
-    // кол-во нейронов в A слое
-//    int nANeurons = in * 2;
-    //
+    // создание S слоя со связями S-A
     for (int j = 0; j < in; ++j)
-        this->sensors << Sensor(nAssoc);
-    for (int j = 0; j < nAssoc; ++j)
-        this->associatives << new Associative(out);
+        this->sensors << Sensor(nH_Neurons);        
+    // жуть 0...
+//    this->layers << Layer(SensorType,in,nH_Neurons);
+    for(int i = 0; i < nHidden - 1; ++i)
+        this->layers << Layer(AssociativeType,nH_Neurons,nH_Neurons);
+    this->layers << Layer(AssociativeType,nH_Neurons,out);
+//    this->layers << Layer(ResultingType,out,0);
+    // создание R слоя
     for (int j = 0; j < out; ++j)
         this->resultings << Resulting(0);
 }
 
-Perceptron::~Perceptron()
-{
-    qDeleteAll(this->associatives);
-}
+Perceptron::~Perceptron(){}
 
 void Perceptron::train(const QList<Pattern> trSet)
 {
@@ -45,19 +45,19 @@ void Perceptron::train(const QList<Pattern> trSet)
 
 void Perceptron::overestimateAR(int rIdx, int value)
 {
-    foreach (Associative* aNeuro, this->associatives) {
-        if(aNeuro->thresholdFunc() == 1)
+    foreach (Neuron* n, this->layers.back().neurons) {
+        if(n->thresholdFunc() == 1)
         {
-            int wht = aNeuro->getLinks()[rIdx];
-            aNeuro->setLinkWeight(rIdx, wht + value);
+            int wht = n->getLinks()[rIdx];
+            dynamic_cast<Associative*>(n)->setLinkWeight(rIdx, wht + value);
         }
     }
 }
-
+// жуть 1...
 void Perceptron::calcReactionA()
 {
     // обнуление значений нейронов A слоя
-    foreach (Associative *aNeuro, this->associatives) {
+    foreach (Neuron *aNeuro, this->layers.first().neurons) {
         aNeuro->setValue(0);
     }
     // проход по всем сенсорам
@@ -65,7 +65,20 @@ void Perceptron::calcReactionA()
         // проход по всем соответствующим нейрону выходам в A слой
         for(int j = 0; j < sNeuro.getLinks().size(); j++)
             // вычисление значения на входе нейрона A
-            this->associatives[j]->addValue(sNeuro.getValue() * sNeuro.getLinks()[j]);
+            this->layers.first().neurons[j]->addValue(sNeuro.getValue() * sNeuro.getLinks()[j]);
+    }
+    //
+    for(int i = 1; i < this->layers.size(); ++i)
+    {
+        // обнуление значений нейронов текущего слоя
+        layers[i].setValue(0);
+        // проход по всем нейронам предыдущего слоя
+        foreach (Neuron* n, this->layers.at(i-1).neurons) {
+            // проход по всем соответствующим нейрону выходам в A слой
+            for(int j = 0; j < n->getLinks().size(); j++)
+                // вычисление значения на входе нейрона A
+                layers[i].neurons[j]->addValue(n->thresholdFunc() * n->getLinks()[j]);
+        }
     }
 }
 
@@ -75,12 +88,11 @@ void Perceptron::calcReactionR()
     for(int i = 0; i < this->resultings.size(); i++)
         this->resultings[i].setValue(0);    
     // проход по всем нейронам A слоя
-    foreach(Associative *aNeuro, this->associatives) {
+    foreach(Neuron *aNeuro, this->layers.back().neurons) {
         // проход по всем соответствующим нейрону выходам в R слой
         for(int j = 0; j < aNeuro->getLinks().size(); j++)
             // вычисление значения на входе нейрона R
-            this->resultings[j].addValue(
-                    aNeuro->thresholdFunc() * aNeuro->getLinks()[j]);
+            this->resultings[j].addValue(aNeuro->thresholdFunc() * aNeuro->getLinks()[j]);
     }
 }
 

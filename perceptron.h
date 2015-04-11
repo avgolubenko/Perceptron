@@ -18,22 +18,22 @@ class Perceptron
 public:   
     /*
      * in - кол-во сенсоров,
-     * nAssocLayers - кол-во скрытых слоёв,
-     * nAssoc - кол-во нейронов в скрытых слоях
+     * nHidden - кол-во скрытых слоёв,
+     * nH_Neurons - кол-во нейронов в скрытых слоях
      * out - кол-во выходов.
      */
-    Perceptron(int in, int nAssocLayers, int nAssoc, int out);
+    Perceptron(int in, int nHidden, int nH_Neurons, int out);
     ~Perceptron();
     // обучение сети набором trSet
     void train(const QList<Pattern> trSet);    
     // классификация сетью изображения
     int classify(const QImage& image);
     //
-private:
+private:    
     // слой сенсоров
     QList<Sensor> sensors;
-    // промежуточный слой
-    QList<Associative*> associatives;
+    // набор промежуточных слоёв
+    QList<Layer> layers;
     // результирующий слой
     QList<Resulting> resultings;
     // предъявление сети изображения
