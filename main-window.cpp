@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->statusBar->addWidget(ui->progressBar);
     ui->statusBar->addWidget(ui->cancelButton);
     //
-    m_pThreadWork = new WorkerThread;
+    m_pThreadWork = new WorkerThread(this);
     connect(m_pThreadWork, &QThread::started, this, &MainWindow::onThreadStarted);
     connect(m_pThreadWork, &QThread::finished, this, &MainWindow::onThreadFinished);
     connect(m_pThreadWork, &WorkerThread::canceled, this, &MainWindow::onThreadCanceled);
@@ -152,9 +152,9 @@ void MainWindow::onThreadFinished()
         }
         case TrainModel:
         {
-            m_bTrained = true;
-            ui->action_Train->setEnabled(false);
-            ui->action_Recognize->setEnabled(!m_Image.isNull());
+            m_bTrained = !m_bCanceled;
+            ui->action_Train->setEnabled(!m_bTrained);
+            ui->action_Recognize->setEnabled(!m_Image.isNull() && m_bTrained);
             statusBar()->showMessage(m_bCanceled ? tr("Canceled") : tr("Model is trained"), 2000);
             break;
         }

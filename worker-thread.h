@@ -19,6 +19,8 @@ class WorkerThread : public QThread
 {
     Q_OBJECT
 public:
+    WorkerThread(MainWindow *pWindow);
+    //
     ~WorkerThread();
     // тип вычислительной операции
     Operation m_nOperation;
@@ -37,13 +39,12 @@ public:
     // создание сети
     void createModel(int nSensors, int nHiddenLayers, int nHiddenNeurons, int nPatterns);
 signals:
-//    void started();
-//    void finished();
     void canceled();
 private:        
     //
     Perceptron *m_Perceptron;
     //
+    MainWindow *m_pWindow;
     QString m_FilePath;
     QScopedPointer<QImage> m_ptrInput, m_ptrResult;
     // класс изображения

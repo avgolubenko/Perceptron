@@ -3,13 +3,15 @@
 
 #include <QDir>
 
+WorkerThread::WorkerThread(MainWindow *pWindow) : m_pWindow(pWindow){}
+
 WorkerThread::~WorkerThread()
 {
     delete m_Perceptron;
 }
 
 const QImage *WorkerThread::getResultImage() const
-{
+{    
     return m_ptrResult.data();
 }
 
@@ -35,7 +37,6 @@ void WorkerThread::startTrainModel()
         return;
     //
     m_nOperation = TrainModel;
-//    m_Perceptron = new Perceptron(nSensors,nPatterns);
     QThread::start();
 }
 
@@ -52,6 +53,7 @@ void WorkerThread::startClassifyImage(const QImage &rcImageInput)
 void WorkerThread::stop()
 {
     requestInterruption();
+    emit canceled();
 }
 
 void WorkerThread::createModel(int nSensors, int nHiddenLayers, int nHiddenNeurons, int nPatterns)
@@ -84,9 +86,22 @@ void WorkerThread::run()
                     trainSet << Pattern(img,type);
                 }
             }
-            int nIters = 2; // число циклов обучения
-            for(int iter = 0; iter < nIters; ++iter)
+            int nIters = 100; // число циклов обучения
+            int nPercent, nPercentPrev = 0;
+            for(int iter = 0; iter < nIters; ++iter){
+                if(isInterruptionRequested()){
+                    break;
+                }
                 m_Perceptron->train(trainSet);
+                nPercent = (100 * iter) / nIters;
+                if(nPercent > nPercentPrev){
+                    nPercentPrev = nPercent;
+                    QMetaObject::invokeMethod(m_pWindow,
+                                              "updateProgress",
+                                              Qt::QueuedConnection,
+                                              Q_ARG(int, nPercent));
+                }
+            }
             break;
     }
         case RecognizeImage:
